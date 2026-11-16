@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  trends-ia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trends-ia-app
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    command: python main.py
