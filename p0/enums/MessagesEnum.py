@@ -1,0 +1,28 @@
+from enum import Enum
+
+class MessagesEnum(str, Enum):
+    EMPTY_TEXT = "Digite um texto antes de solicitar a classificação."
+    MISSING_API_KEY = "Credencial ausente. Configure LLM_API_KEY no ambiente."
+    MISSING_BASE_URL = "Endereço do serviço ausente. Configure LLM_BASE_URL no ambiente."
+    MISSING_MODEL = "Modelo ausente. Configure LLM_MODEL no ambiente."
+    INVALID_BASE_URL = "Endereço do serviço inválido. Verifique LLM_BASE_URL."
+    INVALID_API_KEY = "Credencial inválida. Verifique LLM_API_KEY no ambiente."
+    INVALID_MODEL = "Modelo inválido. Verifique LLM_MODEL no ambiente."
+    INVALID_BASE_URL_FORMAT = "Formato do endereço do serviço inválido. Verifique LLM_BASE_URL."
+    INVALID_API_KEY_FORMAT = "Formato da credencial inválido. Verifique LLM_API_KEY no ambiente."
+    INVALID_MODEL_FORMAT = "Formato do modelo inválido. Verifique LLM_MODEL no ambiente."
+    CLASSIFICATION_ERROR = "Erro de classificação. Verifique o texto e tente novamente."
+    UNKNOWN_ERROR = "Erro desconhecido. Tente novamente mais tarde."
+    TIMEOUT_ERROR = "O serviço demorou muito para responder. Tente novamente."
+    CONNECTION_ERROR = "Não foi possível conectar ao serviço. Verifique sua conexão e o endereço configurado."
+    AUTHENTICATION_ERROR = "Credencial inválida ou sem permissão. Verifique LLM_API_KEY e o acesso ao modelo."
+    PERMISSION_DENIED_ERROR = "Permissão negada. Verifique suas credenciais e tente novamente."
+    CONTENT_FILTER_ERROR = "Erro de filtro de conteúdo. Verifique o texto e tente novamente."
+    RATE_LIMIT_ERROR = "O serviço atingiu o limite de requisições ou da sua cota. Tente novamente mais tarde."
+    NOT_FOUND_ERROR = "Serviço ou modelo não encontrado. Verifique LLM_BASE_URL e LLM_MODEL."
+    SERVICE_UNAVAILABLE_ERROR = "O serviço de LLM está indisponível no momento. Tente novamente mais tarde."
+    SERVICE_RESTRICTED_ERROR = "O serviço recusou a solicitação. Verifique a configuração e o modelo escolhido."
+    INVALID_RESPONSE = "O serviço retornou uma resposta inválida. Tente novamente."
+    FILTERED_CONTENT_ERROR = "O serviço não pôde responder devido ao filtro de conteúdo."
+    BAD_FORMAT_RESPONSE = "O serviço retornou uma resposta em formato inesperado. Tente novamente."
+    
