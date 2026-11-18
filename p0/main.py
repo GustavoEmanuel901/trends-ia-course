@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from usecases.textClassifier import classify_text
+from usecases.textClassifier import ClassificationError, classify_text
 from usecases.getEntry import get_entry
 
 load_dotenv()
@@ -10,7 +10,11 @@ def main():
     if not entrada:
         return
 
-    resultado = classify_text(entrada)
+    try:
+        resultado = classify_text(entrada)
+    except ClassificationError as exc:
+        print(f"Não foi possível classificar: {exc}")
+        return
 
     print("\n--- Resultado da Classificação ---")
     print(f"Categoria ID: {resultado.categoria_id.value}")  
