@@ -1,2 +1,6 @@
+from enum import Enum
+
 class ClassificationError(Exception):
-    """Erro de classificação que pode ser apresentado ao usuário."""
+    def __init__(self, message):
+        text = message.value if isinstance(message, Enum) else str(message)
+        super().__init__(text)

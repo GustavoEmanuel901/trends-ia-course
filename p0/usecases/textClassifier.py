@@ -2,7 +2,7 @@ import os
 from json import JSONDecodeError
 from urllib.parse import urlsplit
 
-from enums import MessagesEnum
+from enums.MessagesTextEnum import MessagesEnum
 from openai import (
     APIConnectionError,
     APIResponseValidationError,
