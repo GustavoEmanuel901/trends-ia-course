@@ -83,4 +83,37 @@ suporte técnico de software (3), vendas (4) e outros (5).
 - **Execução real:** `python main.py` chama o endpoint configurado usando a
   chave e o modelo da conta. Requer conexão, pode consumir cota ou gerar custos,
   e a resposta depende do modelo.
-- **Execução simulada:** fazer testes para simular
+- **Execução simulada:** os testes automatizados executam a lógica de
+  classificação com mocks, sem chamar o serviço real. Isso permite validar o
+  comportamento esperado, testar casos de erro e verificar a tratamento de
+  exceções sem custos.
+
+#### Rodando os testes
+
+Dentro de `p0`, com o ambiente virtual ativado:
+
+```bash
+python -m pytest test/
+```
+
+Ou execute apenas os testes de um arquivo específico:
+
+```bash
+python -m pytest test/textClassifier_test.py -v
+```
+
+#### Cobertura de testes
+
+O suite de testes valida:
+
+- **Configuração:** verificação de variáveis de ambiente obrigatórias
+  (`LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`).
+- **Validação de URL:** rejeição de URLs inválidas (protocolo inválido, sem host,
+  com credenciais, parâmetros de consulta, fragmentos ou caracteres especiais).
+- **Classificação com sucesso:** mock da API OpenAI para simular uma resposta
+  estruturada válida.
+- **Tratamento de exceções:** mapeamento correto de erros da API (timeout,
+  conexão, autenticação, rate limit, indisponibilidade, formato inválido,
+  filtro de conteúdo) para mensagens de erro amigáveis ao usuário.
+
+Ao todo, 30 casos de teste cobrem os cenários críticos da aplicação.
