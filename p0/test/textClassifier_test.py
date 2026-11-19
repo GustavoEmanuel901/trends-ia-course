@@ -20,12 +20,23 @@ from usecases.textClassifier import classify_text
 from enums.MessagesTextEnum import MessagesEnum
 from errors.classificationError import ClassificationError
 from models.classificacaoTexto import ClassificacaoTexto
+from models.llmParams import LLMParams
 
 @pytest.fixture
 def env_ok(monkeypatch):
     monkeypatch.setenv("LLM_API_KEY", "sk-test-123")
     monkeypatch.setenv("LLM_BASE_URL", "https://api.openai.com/v1")
     monkeypatch.setenv("LLM_MODEL", "gpt-4o-mini")
+
+
+@pytest.fixture
+def llm_params_mock():
+    return LLMParams(timeout=30.0, temperature=0.0, max_tokens=1024)
+
+
+@pytest.fixture
+def llm_params_custom():
+    return LLMParams(timeout=60.0, temperature=0.7, max_tokens=2048)
 
 
 def _make_http_error(error_cls, status_code):
@@ -51,10 +62,10 @@ def _make_pydantic_validation_error() -> ValidationError:
         ("LLM_MODEL", MessagesEnum.MISSING_MODEL),
     ],
 )
-def test_variaveis_ambiente_ausentes_ou_vazias(env_ok, monkeypatch, var_name, expected_msg):
+def test_variaveis_ambiente_ausentes_ou_vazias(env_ok, llm_params_mock, monkeypatch, var_name, expected_msg):
     monkeypatch.setenv(var_name, "")
     with pytest.raises(ClassificationError) as exc:
-        classify_text("Olá, preciso de suporte")
+        classify_text("Olá, preciso de suporte", llm_params_mock)
     assert str(exc.value.args[0]) == expected_msg
 
 @pytest.mark.parametrize(
@@ -70,15 +81,15 @@ def test_variaveis_ambiente_ausentes_ou_vazias(env_ok, monkeypatch, var_name, ex
         "http://[::1",                         
     ],
 )
-def test_base_url_invalida(env_ok, monkeypatch, url_invalida):
+def test_base_url_invalida(env_ok, llm_params_mock, monkeypatch, url_invalida):
     monkeypatch.setenv("LLM_BASE_URL", url_invalida)
     with pytest.raises(ClassificationError) as exc:
-        classify_text("Olá, preciso de suporte.")
+        classify_text("Olá, preciso de suporte.", llm_params_mock)
     assert exc.value.args[0] == MessagesEnum.INVALID_BASE_URL
 
 
 @patch("usecases.textClassifier.OpenAI")
-def test_classify_text_sucesso(mock_openai, env_ok):
+def test_classify_text_sucesso(mock_openai, env_ok, llm_params_mock):
     resultado_esperado = MagicMock(spec=ClassificacaoTexto)
 
     mock_client = mock_openai.return_value.__enter__.return_value
@@ -86,7 +97,7 @@ def test_classify_text_sucesso(mock_openai, env_ok):
     mock_completion.choices = [MagicMock(message=MagicMock(parsed=resultado_esperado))]
     mock_client.beta.chat.completions.parse.return_value = mock_completion
 
-    resultado = classify_text("Quero cancelar minha assinatura.")
+    resultado = classify_text("Quero cancelar minha assinatura.", llm_params_mock)
 
     assert resultado is resultado_esperado
     mock_openai.assert_called_once_with(
@@ -120,12 +131,12 @@ def test_classify_text_sucesso(mock_openai, env_ok):
     ],
 )
 @patch("usecases.textClassifier.OpenAI")
-def test_resposta_sem_parsed_valido(mock_openai, env_ok, choices_mock):
+def test_resposta_sem_parsed_valido(mock_openai, env_ok, llm_params_mock, choices_mock):
     mock_client = mock_openai.return_value.__enter__.return_value
     mock_client.beta.chat.completions.parse.return_value = MagicMock(choices=choices_mock)
 
     with pytest.raises(ClassificationError) as exc:
-        classify_text("Texto válido")
+        classify_text("Texto válido", llm_params_mock)
     assert exc.value.args[0] == MessagesEnum.BAD_FORMAT_RESPONSE
 
 @pytest.mark.parametrize(
@@ -153,12 +164,48 @@ def test_resposta_sem_parsed_valido(mock_openai, env_ok, choices_mock):
     ],
 )
 @patch("usecases.textClassifier.OpenAI")
-def test_mapeamento_excecoes_openai(mock_openai, env_ok, excecao_simulada, mensagem_esperada):
+def test_mapeamento_excecoes_openai(mock_openai, env_ok, llm_params_mock, excecao_simulada, mensagem_esperada):
     mock_client = mock_openai.return_value.__enter__.return_value
     mock_client.beta.chat.completions.parse.side_effect = excecao_simulada
 
     with pytest.raises(ClassificationError) as exc:
-        classify_text("Texto válido")
+        classify_text("Texto válido", llm_params_mock)
 
     assert exc.value.args[0] == mensagem_esperada
     assert exc.value.__cause__ is excecao_simulada
+
+
+@patch("usecases.textClassifier.OpenAI")
+def test_classify_text_com_parametros_customizados(mock_openai, env_ok, llm_params_custom):
+    resultado_esperado = MagicMock(spec=ClassificacaoTexto)
+
+    mock_client = mock_openai.return_value.__enter__.return_value
+    mock_completion = MagicMock()
+    mock_completion.choices = [MagicMock(message=MagicMock(parsed=resultado_esperado))]
+    mock_client.beta.chat.completions.parse.return_value = mock_completion
+
+    resultado = classify_text("Teste com parametros customizados", llm_params_custom)
+
+    assert resultado is resultado_esperado
+    mock_openai.assert_called_once_with(
+        base_url="https://api.openai.com/v1",
+        api_key="sk-test-123",
+        timeout=60.0,
+        _strict_response_validation=True,
+    )
+    mock_client.beta.chat.completions.parse.assert_called_once_with(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "Você é um sistema de triagem. Classifique o texto do usuário estritamente nas categorias definidas.",
+            },
+            {
+                "role": "user",
+                "content": "Teste com parametros customizados",
+            },
+        ],
+        response_format=ClassificacaoTexto,
+        temperature=0.7,
+        max_tokens=2048,
+    )
