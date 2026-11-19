@@ -18,9 +18,11 @@ from pydantic import ValidationError
 
 from models.classificacaoTexto import ClassificacaoTexto
 from errors.classificationError import ClassificationError
+from usecases.getLLMparams import get_llm_params
+from models.llmParams import LLMParams
 
 
-def classify_text(text: str) -> ClassificacaoTexto:
+def classify_text(text: str, llm_params: LLMParams) -> ClassificacaoTexto:
     if not text.strip():
         raise ClassificationError(MessagesEnum.EMPTY_TEXT)
 
@@ -55,7 +57,7 @@ def classify_text(text: str) -> ClassificacaoTexto:
         with OpenAI(
             base_url=base_url,
             api_key=api_key,
-            timeout=30.0,
+            timeout=llm_params.timeout,
             _strict_response_validation=True,
         ) as client:
             resposta = client.beta.chat.completions.parse(
@@ -71,8 +73,8 @@ def classify_text(text: str) -> ClassificacaoTexto:
                     },
                 ],
                 response_format=ClassificacaoTexto,
-                temperature=0,
-                max_tokens=1024,
+                temperature=llm_params.temperature,
+                max_tokens=llm_params.max_tokens,
             )
     except APITimeoutError as exc:
         raise ClassificationError(MessagesEnum.TIMEOUT_ERROR) from exc
