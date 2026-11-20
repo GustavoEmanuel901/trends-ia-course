@@ -8,7 +8,7 @@ O serviço e o modelo são definidos por variáveis de ambiente.
 
 ### Requisitos
 
-- Python 3.10 ou superior;
+- Python 3.10 ou superior (testado em 3.13.3);
 - credencial válida e acesso a um serviço compatível com a API da OpenAI;
 - um modelo habilitado para a conta que aceite respostas estruturadas.
 
@@ -78,6 +78,32 @@ Deseja tirar mais dúvidas? (s/n): n
 As categorias disponíveis são operacional (1), suporte técnico de hardware (2),
 suporte técnico de software (3), vendas (4) e outros (5).
 
+### Registros de Execução (Logging)
+
+A aplicação registra informações sobre sua execução em tempo real, sem expor dados
+sensíveis:
+
+**Informações registradas:**
+- Início e fim de cada classificação
+- Carregamento de configuração (hostname do servidor, parâmetros de geração)
+- Fluxo de execução (validação, conexão, processamento)
+- Erros e exceções (com contexto, sem credenciais)
+
+**Dados NÃO registrados (proteção de privacidade):**
+- Chaves de API (`LLM_API_KEY`)
+- URLs completas de endpoint (apenas hostname é registrado)
+- Tokens de resposta da API
+- Credenciais de autenticação
+- Dados pessoais do usuário ou conteúdo específico das dúvidas
+
+**Exemplo de log:**
+```
+2026-11-19 22:36:00 - text_classifier.main - INFO - Iniciando aplicação de classificação de texto
+2026-11-19 22:36:05 - text_classifier.llm_params - INFO - Usando valores padrão do LLM: timeout=30.0, temperature=0.0, max_tokens=1024
+2026-11-19 22:36:08 - text_classifier.classifier - INFO - Conectando ao servidor LLM: api.openai.com
+2026-11-19 22:36:10 - text_classifier.classifier - INFO - Classificação completada com sucesso
+```
+
 ### Testes reais e simulados
 
 - **Execução real:** `python main.py` chama o endpoint configurado usando a
@@ -120,17 +146,6 @@ O suite de testes valida:
 - Função `get_llm_params`: escolha de usar valores padrão ou customizados
 - Case-insensitive na entrada do usuário
 - Validação individual de timeout, temperature e max_tokens inválidos
-
-**Classificação de texto (`textClassifier`)**
-- **Configuração:** verificação de variáveis de ambiente obrigatórias
-  (`LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`).
-- **Validação de URL:** rejeição de URLs inválidas (protocolo inválido, sem host,
-  com credenciais, parâmetros de consulta, fragmentos ou caracteres especiais).
-- **Classificação com sucesso:** mock da API OpenAI para simular uma resposta
-  estruturada válida.
-- **Tratamento de exceções:** mapeamento correto de erros da API (timeout,
-  conexão, autenticação, rate limit, indisponibilidade, formato inválido,
-  filtro de conteúdo) para mensagens de erro amigáveis ao usuário.
 
 **Total: 53 casos de teste** que cobrem:
 - Entrada e validação de dados (6 testes)
