@@ -12,6 +12,19 @@ O serviço e o modelo são definidos por variáveis de ambiente.
 - credencial válida e acesso a um serviço compatível com a API da OpenAI;
 - um modelo habilitado para a conta que aceite respostas estruturadas.
 
+
+### Dependências Principais
+
+| Biblioteca | Versão | Finalidade |
+|-----------|--------|-----------|
+| `openai` | 3.54.0 | Cliente da API OpenAI |
+| `pydantic` | 2.14.3 | Validação de tipos e modelos |
+| `python-dotenv` | 1.2.4 | Carregamento de variáveis de ambiente |
+| `pytest` | 9.2.0 | Framework de testes |
+
+**Versão do Python testada:** 3.13.3  
+**Compatibilidade:** Python 3.10+
+
 ### Instalação
 
 No terminal, a partir da raiz do repositório:
