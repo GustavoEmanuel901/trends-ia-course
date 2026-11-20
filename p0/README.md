@@ -106,6 +106,22 @@ python -m pytest test/textClassifier_test.py -v
 
 O suite de testes valida:
 
+**Entrada de dados (`getEntry`)**
+- Captura correta de entrada do usuário
+- Remoção de espaços em branco (`strip()`)
+- Retorno de `None` para entrada vazia
+- Tratamento de entrada apenas com espaços
+
+**Parâmetros do LLM (`getLLMparams`)**
+- Função `get_input`: conversão de valores float, uso de padrões
+- Validação de entrada vazia e com espaços
+- Tratamento de valores inválidos com fallback para padrão
+- Parametrização com múltiplos valores (positivos, zero, negativos, grandes)
+- Função `get_llm_params`: escolha de usar valores padrão ou customizados
+- Case-insensitive na entrada do usuário
+- Validação individual de timeout, temperature e max_tokens inválidos
+
+**Classificação de texto (`textClassifier`)**
 - **Configuração:** verificação de variáveis de ambiente obrigatórias
   (`LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`).
 - **Validação de URL:** rejeição de URLs inválidas (protocolo inválido, sem host,
@@ -116,4 +132,7 @@ O suite de testes valida:
   conexão, autenticação, rate limit, indisponibilidade, formato inválido,
   filtro de conteúdo) para mensagens de erro amigáveis ao usuário.
 
-Ao todo, 30 casos de teste cobrem os cenários críticos da aplicação.
+**Total: 53 casos de teste** que cobrem:
+- Entrada e validação de dados (6 testes)
+- Parâmetros do LLM (17 testes)
+- Classificação e tratamento de erros (30 testes)
