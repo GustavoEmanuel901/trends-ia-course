@@ -44,7 +44,7 @@ No Windows PowerShell, ative o ambiente com:
 
 ### Configuração do acesso ao serviço
 
-1. Crie uma chave de API na conta do provedor escolhido e confirme que ela tem
+1. Crie uma chave de API na conta do provedor escolhido (Gemini, OpenIA, Ollama) e confirme que ela tem
    permissão para usar o modelo desejado.
 2. Copie `.env.example` para `.env`.
 3. Preencha as três variáveis em `.env` com os valores fornecidos pelo provedor:
