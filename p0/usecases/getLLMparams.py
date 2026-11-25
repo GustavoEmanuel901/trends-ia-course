@@ -22,7 +22,7 @@ def get_llm_params() -> LLMParams:
     if not not_usar_defaults:
         return LLMParams(timeout=30.0, temperature=0.0, max_tokens=1024)
   
-    timeout = get_input("Qual o timeout para a requisição? (Padrão: 30.0) ", 30.0)
+    timeout = get_input("Qual o timeout para a requisição em segundos? (Padrão: 30.0s) ", 30.0)
 
     temperature = get_input("Qual a temperatura para a geração do texto? (Padrão: 0.0) ", 0.0)
    
