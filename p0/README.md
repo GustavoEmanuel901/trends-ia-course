@@ -11,8 +11,8 @@ O serviço e o modelo são definidos por variáveis de ambiente.
 A solução apoia a triagem inicial de dúvidas, classificando cada texto em uma
 categoria operacional, de suporte técnico de hardware ou software, vendas ou
 outros, e gerando um resumo curto. É voltada a pequenas equipes de atendimento
-ou suporte que precisam organizar solicitações recebidas. O programa não
-encaminha as solicitações a equipes nem substitui o atendimento humano.
+ou suporte que precisam organizar solicitações recebidas. O programa ainda não
+encaminha as solicitações a equipes e não substitui o atendimento humano.
 
 ### Por que utilizar um LLM
 
