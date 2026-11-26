@@ -6,10 +6,38 @@ Aplicação de terminal que envia uma dúvida a um serviço de linguagem compat�
 com a API da OpenAI e apresenta a categoria e um resumo da resposta estruturada.
 O serviço e o modelo são definidos por variáveis de ambiente.
 
+### Problema e público
+
+A solução apoia a triagem inicial de dúvidas, classificando cada texto em uma
+categoria operacional, de suporte técnico de hardware ou software, vendas ou
+outros, e gerando um resumo curto. É voltada a pequenas equipes de atendimento
+ou suporte que precisam organizar solicitações recebidas. O programa não
+encaminha as solicitações a equipes nem substitui o atendimento humano.
+
+### Por que utilizar um LLM
+
+Um LLM permite classificar textos escritos livremente e produzir um resumo sem
+depender de uma base inicial de exemplos já classificados para treinar um
+modelo específico. A resposta estruturada facilita validar a categoria e o
+resumo esperados. Essa escolha tem custos e limitações: a resposta pode variar,
+depende do serviço e do modelo configurados e deve ser conferida por uma pessoa.
+Com uma base confiável de exemplos rotulados, um classificador tradicional
+também pode ser uma alternativa adequada.
+
+### Funcionamento da solução
+
+1. A aplicação solicita os parâmetros de geração e a dúvida no terminal.
+2. Valida a entrada e a configuração do serviço, incluindo a URL base.
+3. Envia a dúvida ao modelo, solicitando uma classificação estruturada com ID,
+   nome da categoria e resumo.
+4. Exibe o resultado ou uma mensagem de erro tratada. O usuário pode informar
+   outra dúvida ou encerrar.
+
 ### Requisitos
 
 - Python 3.10 ou superior;
-- credencial válida e acesso a um serviço compatível com a API da OpenAI;
+- credencial ou configuração válida e acesso a um serviço compatível com a API
+  da OpenAI;
 - um modelo habilitado para a conta que aceite respostas estruturadas.
 
 
@@ -44,10 +72,13 @@ No Windows PowerShell, ative o ambiente com:
 
 ### Configuração do acesso ao serviço
 
-1. Crie uma chave de API na conta do provedor escolhido (Gemini, OpenIA, Ollama) e confirme que ela tem
-   permissão para usar o modelo desejado.
+1. Escolha um provedor compatível (por exemplo, OpenAI, Gemini ou um servidor
+   local como Ollama) e confirme que o endpoint e o modelo aceitam respostas
+   estruturadas pela API compatível com OpenAI.
 2. Copie `.env.example` para `.env`.
-3. Preencha as três variáveis em `.env` com os valores fornecidos pelo provedor:
+3. Preencha as três variáveis em `.env` com os valores fornecidos pelo provedor.
+   Para um serviço local, use a URL e o valor de chave exigidos pela configuração
+   desse serviço:
 
    ```dotenv
    LLM_API_KEY=sua_chave_de_api
@@ -91,6 +122,16 @@ Deseja tirar mais dúvidas? (s/n): n
 As categorias disponíveis são operacional (1), suporte técnico de hardware (2),
 suporte técnico de software (3), vendas (4) e outros (5).
 
+### Limites do projeto
+
+- As categorias são fixas no código; não há interface para cadastrá-las ou
+  alterá-las.
+- A aplicação funciona somente pelo terminal e não salva dúvidas nem resultados.
+- O programa classifica e resume o texto, mas não responde à dúvida 
+- A qualidade e a disponibilidade dependem do provedor, do modelo e da
+  configuração; verifique os resultados antes de usá-los em decisões de
+  atendimento.
+
 ### Testes reais e simulados
 
 - **Execução real:** `python main.py` chama o endpoint configurado usando a
@@ -100,6 +141,13 @@ suporte técnico de software (3), vendas (4) e outros (5).
   classificação com mocks, sem chamar o serviço real. Isso permite validar o
   comportamento esperado, testar casos de erro e verificar a tratamento de
   exceções sem custos.
+
+### Limitações conhecidas
+
+Uma chamada real depende de conectividade, credenciais ou configuração local,
+disponibilidade e limites do provedor; pode consumir cota ou gerar custos. Os
+testes simulados não garantem quecada modelo compatível produza respostas corretas.
+A aplicação também não armazena resultados nem mantém contexto entre dúvidas.
 
 #### Rodando os testes
 
@@ -145,7 +193,11 @@ O suite de testes valida:
   conexão, autenticação, rate limit, indisponibilidade, formato inválido,
   filtro de conteúdo) para mensagens de erro amigáveis ao usuário.
 
-**Total: 53 casos de teste** que cobrem:
+**Total: 54 casos de teste** que cobrem:
 - Entrada e validação de dados (6 testes)
 - Parâmetros do LLM (17 testes)
-- Classificação e tratamento de erros (30 testes)
+- Classificação e tratamento de erros (31 testes)
+
+### Vídeo
+
+O vídeo de demonstração ainda não está disponível.
