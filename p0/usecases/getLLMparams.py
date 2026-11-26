@@ -34,7 +34,7 @@ def get_llm_params() -> LLMParams:
   
     logger.info("Configurando parâmetros customizados do LLM")
     
-    timeout = get_input("Qual o timeout para a requisição? (Padrão: 30.0) ", 30.0)
+    timeout = get_input("Qual o timeout para a requisição em segundos? (Padrão: 30.0s) ", 30.0)
     temperature = get_input("Qual a temperatura para a geração do texto? (Padrão: 0.0) ", 0.0)
     max_tokens = int(get_input("Qual o número máximo de tokens para a geração do texto? (Padrão: 1024) ", 1024))
 
