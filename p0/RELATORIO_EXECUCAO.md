@@ -42,4 +42,4 @@
 
 - **Principal aprendizado:** integrar um modelo de linguagem também exige validar a configuração e tratar respostas e falhas externas.
 - **Competência mais desenvolvida:** modularização da aplicação e criação de testes simulados para diferentes resultados.
-- **Aspecto a aprimorar:** escrita da documentação durante o desenvolvimento 
+- **Aspecto a aprimorar:** escrita da documentação durante o desenvolvimento e integração com algum serviço com Whatsapp
