@@ -28,6 +28,7 @@
 - **Uso do LLM**: Para essa tarefa o uso de LLM pode ser considerado um OVERKILL, pois técnicas simples de aprendizado de máquina conseguem fazer a classificação de textos muito bem. O uso de um modelo de linguagem se justifica em falta de bases de dados iniciais para treinar o modelo, pensando em um empresa pequena onde não tem dados guardados ou não quer consideram o trabalho juridico de capturar os dados de seus clientes.
 - **Modelos de LLM utilizados**: Foram testados dois modelos de LLM o gemini-4-hydrogen que trouxe bons resultados, porém tem limites rigidos da conta gratuita e começa a dar erros de timeout (esse tempo pode ser configurado pelo usuário). O outro modelo testado foi o phi4-mini:3.8b rodando o Ollama localmente, esse modelo responde muito rápido porém em alguns momentos suas respostas são equivocadas.
 - **Erros com o texto do Enum**: Durante o desenvolvimento descobri que não era possivel acessar o texto do Enum como em outras linguagens, mas para isso foi desenvolvido a lógica do `classificationError.py`.
+- **Remover todas as strings hardcode**: As mensagens de erro foram transformadas em um Enum, porém todas as strings poderiam estar fora do código com hardcode
 
 ## Uso de IA no desenvolvimento
 
