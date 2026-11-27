@@ -200,4 +200,4 @@ O suite de testes valida:
 
 ### Vídeo
 
-O vídeo de demonstração ainda não está disponível.
+[O vídeo de demonstração](https://youtu.be/9623nA6jD4s)
